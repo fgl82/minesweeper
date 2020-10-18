@@ -1,5 +1,7 @@
 package minesweeper.application.model;
 
+import java.util.Random;
+
 import org.springframework.stereotype.Component;
 
 import lombok.Getter;
@@ -25,7 +27,7 @@ public class Board {
 		}
 		for (int plantedMines=0;plantedMines<mines;plantedMines++) {
 			while (true) {
-				int itsAMine = (int) (Math.random() * ((rows*columns)));
+				int itsAMine = new Random().nextInt(99);
 				if ((plantedMines==0)||!squares[itsAMine/rows][itsAMine%rows].getContent().boom()) {
 					Mine mine = new Mine();
 					squares[itsAMine/rows][itsAMine%rows].setContent(mine);
@@ -41,7 +43,7 @@ public class Board {
 		for (int row=0;row<rows;row++) {
 			sb.append("\n");
 			for (int column=0;column<columns;column++) {
-				sb.append(squares[row][column].getContent().boom()==false?0:1);
+				sb.append(squares[row][column].getContent().boom()?1:0);
 				sb.append(" ");
 			}
 		}

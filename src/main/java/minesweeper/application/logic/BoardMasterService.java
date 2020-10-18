@@ -21,8 +21,8 @@ public class BoardMasterService {
 		board.init(rows, columns, mines);		
 	}
 
-	public void flagSquare(Board board, int row, int column, boolean flag) {
-		board.getSquares()[row][column].setFlagged(flag);		
+	public void flagSquare(Square square, boolean flag) {
+		square.setFlagged(flag);		
 	}
 
 	public Square getSquare(Board board, int row, int column) {
@@ -49,5 +49,23 @@ public class BoardMasterService {
 			return value;
 		}
 		return value;
+	}
+
+	public String getColorForValue(int value) {
+		if (value==1) {
+			return "#00CCFF";	
+		} else if (value==2) {
+			return "#00FF00";
+		} else if (value==3) {
+			return "#FFFF00";	
+		} else if (value==4) {
+			return "#FFA500";
+		} else if (value==5) {
+			return "#EE82EE";	
+		} else if (value==6) {
+			return "#FF2965";	
+		} else {
+			return "#FF0000";	
+		}
 	}
 }

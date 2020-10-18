@@ -21,6 +21,7 @@ import javafx.scene.text.TextAlignment;
 import lombok.Getter;
 import minesweeper.application.model.Board;
 import minesweeper.application.model.Square;
+import minesweeper.application.utils.Constants;
 import net.rgielen.fxweaver.core.FxmlView;
 
 @Getter
@@ -59,127 +60,112 @@ public class MainController {
 		}
 	}
 
+	private void clickOnMineSquare(MouseEvent e, int row, int column, ImageView view) {
+		Square square = boardMasterService.getSquare(board, row, column);
+		if (e.getButton()==MouseButton.SECONDARY) {
+			Image image;							
+			if (!square.isFlagged()) {
+				boardMasterService.flagSquare(square, true);
+				image = new Image(Constants.WARNING_PICTURE);
+			} else {
+				boardMasterService.flagSquare(square, false);
+				image = new Image(Constants.TILE_PICTURE);
+			}
+			view.setImage(image);
+		} else {
+			if (square.isFlagged()) {
+				return;
+			}
+			Alert a = new Alert(AlertType.ERROR);
+			a.setContentText("You are dead");
+			a.setTitle("Boom!!!");
+			a.setHeaderText(null);
+			a.show();
+		}
+	}
+
+	private void clickOnEmptySquare(MouseEvent e, int value, int row, int column, ImageView view) {
+		Square square = boardMasterService.getSquare(board, row, column);
+		if (e.getButton() == MouseButton.SECONDARY) {
+			Image image1;
+			if (!square.isFlagged()) {
+				boardMasterService.flagSquare(square, true);
+				image1 = new Image(Constants.WARNING_PICTURE);
+			} else {
+				boardMasterService.flagSquare(square, false);
+				image1 = new Image(Constants.TILE_PICTURE);
+			}
+			view.setImage(image1);
+		} else {
+			if (square.isFlagged()) {
+				return;
+			}
+			boardMasterService.discoverSquare();
+			view.setFitHeight(40);
+			view.setFitWidth(40);
+			view.setVisible(false);
+			if (boardMasterService.getRemainingSquares() == 0) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setContentText("You made it!");
+				a.setTitle("All mines discovered");
+				a.setHeaderText(null);
+				a.show();
+				return;
+			}
+			if (value == 0) {
+				Node node = getNodeFromGridPane(column - 1, row - 1);
+				fireNode(node);
+				node = getNodeFromGridPane(column, row - 1);
+				fireNode(node);
+				node = getNodeFromGridPane(column + 1, row - 1);
+				fireNode(node);
+				node = getNodeFromGridPane(column - 1, row);
+				fireNode(node);
+				node = getNodeFromGridPane(column + 1, row);
+				fireNode(node);
+				node = getNodeFromGridPane(column - 1, row + 1);
+				fireNode(node);
+				node = getNodeFromGridPane(column, row + 1);
+				fireNode(node);
+				node = getNodeFromGridPane(column + 1, row + 1);
+				fireNode(node);
+			}
+		}
+	}		
+
+
 	public void initializeBoard() {
 		boardPanel.getParent().setStyle("-fx-background-color: #333333");
-		((Pane)boardPanel.getParent()).setPrefSize(40*board.getRows(), 40*board.getColumns());
-		boardMasterService.initializeBoard(board, 20, 20, 50);
+		((Pane)boardPanel.getParent()).setPrefSize((double)40*board.getRows(), (double)40*board.getColumns());
+		boardMasterService.initializeBoard(board, 10, 10, 10);
 		for (int row=0;row<board.getRows();row++) {
 			final int finalRow = row;
 			for (int column=0;column<board.getColumns();column++) {
 				final int finalColumn = column;
-				//Button button = new Button();
-				//button.setStyle("-fx-focus-color: transparent;");
-				//button.setStyle("-fx-faint-focus-color: transparent;");
-				//button.setFocusTraversable(false);
-				//button.setPrefSize(40, 40);
 				Label label = new Label();
 				label.setPrefSize(40, 40);
 				label.setMaxSize(40, 40);
 				label.setStyle("-fx-font-weight: bold");
-				Image image = new Image("tile.png");
+				Image image = new Image(Constants.TILE_PICTURE);
 				ImageView view = new ImageView(image);
 				view.setFitHeight(40);
 				view.setFitWidth(40);				
 				if (!board.getSquares()[row][column].getContent().boom()) {
 					int value = boardMasterService.getSquareValue(board, row, column);
 					Integer finalValue = value;
-					if (finalValue==1) {
-						label.setTextFill(Color.web("#00CCFF"));	
-					} else if (finalValue==2) {
-						label.setTextFill(Color.web("#00FF00"));
-					} else if (finalValue==3) {
-						label.setTextFill(Color.web("#FFFF00"));	
-					} else if (finalValue==4) {
-						label.setTextFill(Color.web("#FFA500"));
-					} else if (finalValue==5) {
-						label.setTextFill(Color.web("#EE82EE"));	
-					} else if (finalValue==6) {
-						label.setTextFill(Color.web("#FF2965"));	
-					} else if (finalValue>=7) {
-						label.setTextFill(Color.web("#FF0000"));	
-					}
+					label.setTextFill(Color.web(boardMasterService.getColorForValue(finalValue)));					
 					if (finalValue>0) {
 						label.setText(Integer.toString(finalValue));
 					}
 					label.setTextAlignment(TextAlignment.CENTER);
 					label.setAlignment(Pos.CENTER);
-					view.setOnMouseClicked(e -> {
-						Square square = boardMasterService.getSquare(board, finalRow, finalColumn);
-						if (e.getButton()==MouseButton.SECONDARY) {
-							Image image1;							
-							if (!square.isFlagged()) {
-								square.setFlagged(true);
-								image1 = new Image("warning.png");
-							} else {
-								square.setFlagged(false);
-								image1 = new Image("tile.png");
-							}
-							view.setImage(image1);
-						} else {
-							if (square.isFlagged()) {
-								return;
-							}							
-							boardMasterService.discoverSquare();
-							view.setFitHeight(40);
-							view.setFitWidth(40);						
-							view.setVisible(false);
-							if (boardMasterService.getRemainingSquares()==0) {
-								Alert a = new Alert(AlertType.INFORMATION);
-								a.setContentText("You made it!");
-								a.setTitle("All mines discovered");
-								a.setHeaderText(null);
-								a.show();
-								return;
-							} 						
-							if(finalValue==0) {
-								Node node = getNodeFromGridPane(finalColumn-1, finalRow-1);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn, finalRow-1);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn+1, finalRow-1);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn-1, finalRow);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn+1, finalRow);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn-1,finalRow+1);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn, finalRow+1);
-								fireNode(node);
-								node = getNodeFromGridPane(finalColumn+1, finalRow+1);
-								fireNode(node);
-							}
-						}});
+					view.setOnMouseClicked(e -> clickOnEmptySquare(e, finalValue, finalRow, finalColumn, view));
 
 				} else {
-					view.setOnMouseClicked(e -> {
-						Square square = boardMasterService.getSquare(board, finalRow, finalColumn);
-						if (e.getButton()==MouseButton.SECONDARY) {
-							Image image1;							
-							if (!square.isFlagged()) {
-								square.setFlagged(true);
-								image1 = new Image("warning.png");
-							} else {
-								square.setFlagged(false);
-								image1 = new Image("tile.png");
-							}
-							view.setImage(image1);
-						} else {
-							if (square.isFlagged()) {
-								return;
-							}
-							Alert a = new Alert(AlertType.ERROR);
-							a.setContentText("You are dead");
-							a.setTitle("Boom!!!");
-							a.setHeaderText(null);
-							a.show();
-						}
-					});
+					view.setOnMouseClicked(e -> clickOnMineSquare(e, finalRow, finalColumn, view));
 				}
 				this.boardPanel.add(label, column, row);			
 				this.boardPanel.add(view, column, row);
-				//button.setGraphic(view);
-				//this.boardPanel.add(button, column, row);
 			}
 		}
 	}

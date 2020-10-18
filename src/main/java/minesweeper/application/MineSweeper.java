@@ -8,8 +8,5 @@ import javafx.application.Application;
 public class MineSweeper {
 	public static void main(String[] args) {
 		Application.launch(MineSweeperRunner.class, args);
-		//		SpringApplication.run(MineSweeper.class, args);
 	}
-
-
 }

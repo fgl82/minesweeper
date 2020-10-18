@@ -12,6 +12,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -19,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import lombok.Getter;
 import minesweeper.application.model.Board;
+import minesweeper.application.model.Square;
 import net.rgielen.fxweaver.core.FxmlView;
 
 @Getter
@@ -102,13 +104,21 @@ public class MainController {
 					label.setTextAlignment(TextAlignment.CENTER);
 					label.setAlignment(Pos.CENTER);
 					view.setOnMouseClicked(e -> {
-						if (e.isShiftDown()) {
-							System.out.println("2");
-							Image image1 = new Image("warning.png");
+						Square square = boardMasterService.getSquare(board, finalRow, finalColumn);
+						if (e.getButton()==MouseButton.SECONDARY) {
+							Image image1;							
+							if (!square.isFlagged()) {
+								square.setFlagged(true);
+								image1 = new Image("warning.png");
+							} else {
+								square.setFlagged(false);
+								image1 = new Image("tile.png");
+							}
 							view.setImage(image1);
-							//						view.setScaleX(0.5);
-							//						view.setScaleY(0.5);
 						} else {
+							if (square.isFlagged()) {
+								return;
+							}							
 							boardMasterService.discoverSquare();
 							view.setFitHeight(40);
 							view.setFitWidth(40);						
@@ -143,13 +153,21 @@ public class MainController {
 
 				} else {
 					view.setOnMouseClicked(e -> {
-						if (e.isShiftDown()) {
-							System.out.println("2");
-							Image image1 = new Image("warning.png");
+						Square square = boardMasterService.getSquare(board, finalRow, finalColumn);
+						if (e.getButton()==MouseButton.SECONDARY) {
+							Image image1;							
+							if (!square.isFlagged()) {
+								square.setFlagged(true);
+								image1 = new Image("warning.png");
+							} else {
+								square.setFlagged(false);
+								image1 = new Image("tile.png");
+							}
 							view.setImage(image1);
-							//						view.setScaleX(0.5);
-							//						view.setScaleY(0.5);
-						} else {						
+						} else {
+							if (square.isFlagged()) {
+								return;
+							}
 							Alert a = new Alert(AlertType.ERROR);
 							a.setContentText("You are dead");
 							a.setTitle("Boom!!!");

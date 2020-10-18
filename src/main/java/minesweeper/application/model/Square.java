@@ -10,4 +10,5 @@ import lombok.Setter;
 @Component
 public class Square {
 	private Content content;
+	private boolean flagged;
 }

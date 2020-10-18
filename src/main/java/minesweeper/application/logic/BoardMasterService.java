@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.Getter;
 import minesweeper.application.model.Board;
+import minesweeper.application.model.Square;
 
 @Service
 @Getter
@@ -18,6 +19,14 @@ public class BoardMasterService {
 	public void initializeBoard(Board board, int rows, int columns, int mines) {
 		remainingSquares = (rows * columns) - mines;
 		board.init(rows, columns, mines);		
+	}
+
+	public void flagSquare(Board board, int row, int column, boolean flag) {
+		board.getSquares()[row][column].setFlagged(flag);		
+	}
+
+	public Square getSquare(Board board, int row, int column) {
+		return board.getSquares()[row][column];
 	}
 
 	public int getSquareValue(Board board, int row, int column) {

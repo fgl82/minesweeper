@@ -62,8 +62,8 @@ public class MainController {
 
 	private void clickOnMineSquare(MouseEvent e, int row, int column, ImageView view) {
 		Square square = boardMasterService.getSquare(board, row, column);
-		if (e.getButton()==MouseButton.SECONDARY) {
-			Image image;							
+		Image image;
+		if (e.getButton()==MouseButton.SECONDARY) {							
 			if (!square.isFlagged()) {
 				boardMasterService.flagSquare(square, true);
 				image = new Image(Constants.WARNING_PICTURE);
@@ -76,6 +76,10 @@ public class MainController {
 			if (square.isFlagged()) {
 				return;
 			}
+			image = new Image("mine.png");
+			view.setScaleX(0.75);
+			view.setScaleY(0.75);
+			view.setImage(image);
 			Alert a = new Alert(AlertType.ERROR);
 			a.setContentText("You are dead");
 			a.setTitle("Boom!!!");

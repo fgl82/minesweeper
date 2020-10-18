@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import minesweeper.application.logic.MainController;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -34,6 +35,7 @@ public class MineSweeperRunner extends Application {
 		applicationContext.getBean(MainController.class).initializeBoard();
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
+		stage.getIcons().add(new Image("mine.png"));
 		stage.show();
 	}	
 

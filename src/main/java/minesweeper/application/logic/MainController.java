@@ -74,7 +74,7 @@ public class MainController {
 				label.setPrefSize(40, 40);
 				label.setMaxSize(40, 40);
 				label.setStyle("-fx-font-weight: bold");
-				Image image = new Image("file:////home/bittboy/Downloads/minecraft-icon.png");
+				Image image = new Image("tile.png");
 				ImageView view = new ImageView(image);
 				view.setFitHeight(40);
 				view.setFitWidth(40);				

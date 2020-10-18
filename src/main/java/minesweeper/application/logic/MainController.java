@@ -102,42 +102,60 @@ public class MainController {
 					label.setTextAlignment(TextAlignment.CENTER);
 					label.setAlignment(Pos.CENTER);
 					view.setOnMouseClicked(e -> {
-						boardMasterService.discoverSquare();	
-						view.setVisible(false);
-						if (boardMasterService.getRemainingSquares()==0) {
-							Alert a = new Alert(AlertType.INFORMATION);
-							a.setContentText("You made it!");
-							a.setTitle("All mines discovered");
-							a.setHeaderText(null);
-							a.show();
-							return;
-						} 						
-						if(finalValue==0) {
-							Node node = getNodeFromGridPane(finalColumn-1, finalRow-1);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn, finalRow-1);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn+1, finalRow-1);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn-1, finalRow);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn+1, finalRow);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn-1,finalRow+1);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn, finalRow+1);
-							fireNode(node);
-							node = getNodeFromGridPane(finalColumn+1, finalRow+1);
-							fireNode(node);
-						}
-					});					
+						if (e.isShiftDown()) {
+							System.out.println("2");
+							Image image1 = new Image("warning.png");
+							view.setImage(image1);
+							//						view.setScaleX(0.5);
+							//						view.setScaleY(0.5);
+						} else {
+							boardMasterService.discoverSquare();
+							view.setFitHeight(40);
+							view.setFitWidth(40);						
+							view.setVisible(false);
+							if (boardMasterService.getRemainingSquares()==0) {
+								Alert a = new Alert(AlertType.INFORMATION);
+								a.setContentText("You made it!");
+								a.setTitle("All mines discovered");
+								a.setHeaderText(null);
+								a.show();
+								return;
+							} 						
+							if(finalValue==0) {
+								Node node = getNodeFromGridPane(finalColumn-1, finalRow-1);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn, finalRow-1);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn+1, finalRow-1);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn-1, finalRow);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn+1, finalRow);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn-1,finalRow+1);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn, finalRow+1);
+								fireNode(node);
+								node = getNodeFromGridPane(finalColumn+1, finalRow+1);
+								fireNode(node);
+							}
+						}});
+
 				} else {
 					view.setOnMouseClicked(e -> {
-						Alert a = new Alert(AlertType.ERROR);
-						a.setContentText("You are dead");
-						a.setTitle("Boom!!!");
-						a.setHeaderText(null);
-						a.show();
+						if (e.isShiftDown()) {
+							System.out.println("2");
+							Image image1 = new Image("warning.png");
+							view.setImage(image1);
+							//						view.setScaleX(0.5);
+							//						view.setScaleY(0.5);
+						} else {						
+							Alert a = new Alert(AlertType.ERROR);
+							a.setContentText("You are dead");
+							a.setTitle("Boom!!!");
+							a.setHeaderText(null);
+							a.show();
+						}
 					});
 				}
 				this.boardPanel.add(label, column, row);			
